@@ -144,7 +144,7 @@ def add_captions(
     fit_function = None,
 
     padding = 50,
-    position = ("center", "center"), # TODO: Implement this
+    position = "center",
 
     shadow_strength = 1.0,
     shadow_blur = 0.1,
@@ -243,21 +243,40 @@ def add_captions(
                     shadow = create_shadow(line["text"], font_size, font, shadow_blur, opacity=1)
                     shadow = shadow.set_start(caption["start"])
                     shadow = shadow.set_duration(caption["end"] - caption["start"])
-                    shadow = shadow.set_position(pos)
+                    if position == "bottom":
+                        shadow = shadow.set_position(("center", video.h - shadow.size[1] - padding))
+                    else:
+                        shadow = shadow.set_position(pos)
                     clips.append(shadow)
 
                 if shadow_left > 0:
                     shadow = create_shadow(line["text"], font_size, font, shadow_blur, opacity=shadow_left)
                     shadow = shadow.set_start(caption["start"])
                     shadow = shadow.set_duration(caption["end"] - caption["start"])
-                    shadow = shadow.set_position(pos)
+                    if position == "bottom":
+                        shadow = shadow.set_position(("center", video.h - shadow.size[1] - padding))
+                    else:
+                        shadow = shadow.set_position(pos)
                     clips.append(shadow)
 
                 # Create text
-                text = create_text_ex(word_list, font_size, font_color, font, stroke_color=stroke_color, stroke_width=stroke_width)
+                text = create_text_ex(
+                    word_list, 
+                    font_size, 
+                    font_color, 
+                    font, 
+                    stroke_color=stroke_color, 
+                    stroke_width=stroke_width,
+                    position=position
+                )
+                
+                if position == "bottom":
+                    text = text.set_position(("center", video.h - text.size[1] - padding))
+                else:
+                    text = text.set_position(pos)
+                    
                 text = text.set_start(caption["start"])
                 text = text.set_duration(caption["end"] - caption["start"])
-                text = text.set_position(pos)
                 clips.append(text)
 
                 text_y_offset += line["height"]

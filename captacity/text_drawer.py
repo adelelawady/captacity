@@ -125,12 +125,13 @@ def create_text_chars(
 
     return clips
 
-def create_composite_text(text_clips: list[VideoClip], font, font_size) -> CompositeVideoClip:
+def create_composite_text(text_clips: list[VideoClip], font, font_size, position="center") -> CompositeVideoClip:
     clips = []
 
     font = ImageFont.truetype(font, font_size)
     scale_factor = 3.012 # factor to convert Pillow to MoviePy width
 
+    # Calculate total width
     full_width = 0
     for clip in text_clips[:-1]:
         width = font.getlength(clip.text) * scale_factor
@@ -139,14 +140,31 @@ def create_composite_text(text_clips: list[VideoClip], font, font_size) -> Compo
     full_width += text_clips[-1].size[0]
     offset_x = 0
 
+    # Get the maximum height among all clips
+    max_height = max(clip.size[1] for clip in text_clips)
+
     for clip in text_clips:
         clip.size = (int(full_width), clip.size[1])
-        clip = clip.set_position((int(offset_x), 0))
+        
+        # Calculate y position based on position parameter
+        if position == "bottom":
+            # Position relative to parent will be handled by CompositeVideoClip
+            y_pos = max_height - clip.size[1]
+        else:  # center
+            y_pos = (max_height - clip.size[1]) // 2
+
+        clip = clip.set_position((int(offset_x), y_pos))
         width = font.getlength(clip.text)
         offset_x += width * scale_factor
         clips.append(clip)
 
-    return CompositeVideoClip(clips)
+    composite = CompositeVideoClip(clips)
+    
+    # Set the position property for the entire composite
+    if position == "bottom":
+        composite.relative_position = "bottom"
+    
+    return composite
 
 def str_to_charlist(text: str) -> list[Character]:
     return [Character(char) for char in text]
@@ -162,8 +180,9 @@ def create_text_ex(
     stroke_color = None,
     stroke_width = 1,
     kerning = 0,
+    position = "center",
 ) -> CompositeVideoClip:
     if isinstance(text, str):
         text = str_to_charlist(text)
     text_clips = create_text_chars(text, fontsize, color, font, bg_color, blur_radius, opacity, stroke_color, stroke_width)
-    return create_composite_text(text_clips, font, fontsize // 3)
+    return create_composite_text(text_clips, font, fontsize // 3, position)
