@@ -7,7 +7,7 @@ def get_requirements():
         return f.read().splitlines()
 
 setup(
-    name='captacity',
+    name='captacity_clipify',
     version='0.3.1',
     packages=find_packages(),
     install_requires=get_requirements(),
