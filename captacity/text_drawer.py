@@ -2,6 +2,7 @@ from moviepy.editor import TextClip, ImageClip, VideoClip, CompositeVideoClip
 from PIL import Image, ImageFilter, ImageFont
 import numpy
 import tempfile
+from typing import Union
 
 text_cache = {}
 
@@ -75,7 +76,7 @@ def create_text(
     bg_color: str = 'transparent',
     blur_radius: int = 0,
     opacity: float = 1.0,
-    stroke_color: str | None = None,
+    stroke_color: Union[str, None] = None,
     stroke_width: int = 1,
     kerning: float = 0.0,
 ) -> VideoClip:
@@ -98,7 +99,7 @@ def create_text(
     return text_clip
 
 def create_text_chars(
-    text: list[Word] | list[Character],
+    text: Union[list[Word], list[Character]],
     fontsize,
     color,
     font,
@@ -170,7 +171,7 @@ def str_to_charlist(text: str) -> list[Character]:
     return [Character(char) for char in text]
 
 def create_text_ex(
-    text: list[Word] | list[Character] | str,
+    text: Union[list[Word], list[Character], str],
     fontsize,
     color,
     font,

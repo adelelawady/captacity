@@ -8,7 +8,7 @@ def get_requirements():
 
 setup(
     name='captacity_clipify',
-    version='0.3.1',
+    version='0.3.3',
     packages=find_packages(),
     install_requires=get_requirements(),
     extras_require = {

@@ -1,9 +1,11 @@
+from __future__ import annotations
+from typing import Union
 import openai
 from openai._types import FileTypes
 
 def transcribe_with_api(
     audio_file: FileTypes,
-    prompt: str | None = None
+    prompt: Union[str, None] = None
 ):
     """
     Transcribe an audio file using the OpenAI Whisper API
@@ -31,7 +33,7 @@ def transcribe_with_api(
 
 def transcribe_locally(
     audio_file: str,
-    prompt: str | None = None
+    prompt: Union[str, None] = None
 ):
     """
     Transcribe an audio file using the local Whisper package

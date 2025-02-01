@@ -3,4 +3,4 @@ __pycache__/
 with_transcript.avi
 build/
 dist/
-captacity.egg-info/
+captacity_clipify.egg-info/
